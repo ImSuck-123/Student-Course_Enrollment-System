@@ -35,6 +35,7 @@ if (isset($_GET['student_id']) && $_GET['student_id'] !== '') {
 </head>
 <body>
     <h1>Student Enrollments</h1>
+    <p><a href="../index.php">Back to Home</a></p>
     <a href="enroll.php">Enroll a Student</a>
 
     <form method="GET">
