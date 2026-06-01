@@ -12,6 +12,7 @@ $students = $stmt->fetchAll();
 </head>
 <body>
     <h1>All Students</h1>
+    <p><a href="../index.php">Back to Home</a></p>
     <a href="add.php">Add New Student</a>
     <table border="1">
         <tr>

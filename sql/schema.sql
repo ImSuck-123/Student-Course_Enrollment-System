@@ -42,3 +42,17 @@ INSERT INTO courses (course_name, credits) VALUES
     ('Database Systems',            3),
     ('Web Development',             3),
     ('Computer Networks',           3);
+
+CREATE TABLE IF NOT EXISTS members (
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    name       VARCHAR(100) NOT NULL,
+    student_id VARCHAR(20)  NOT NULL,
+    email      VARCHAR(100) NOT NULL,
+    role       VARCHAR(100) NOT NULL,
+    bio        TEXT
+);
+
+INSERT INTO members (name, student_id, email, role, bio) VALUES
+    ('Jun',           '413856039', 'chinjunsi90@gmail.com',    'Project Lead',                        'Hello, I am Jun and I love math.'),
+    ('Jordan',        '413856070', 'xxjordanxx88@gmail.com',   'Project Initiator & Backend Developer','Hello I am Jordan! I love to study!'),
+    ('Terence Tseng', '413856013', 'terencet.301@gmail.com',   'Frontend Developer',                  'Hi I am Terence studying at TKU');
