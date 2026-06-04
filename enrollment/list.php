@@ -1,21 +1,26 @@
+<?php require_once '../auth.php'; ?>
 <?php
 require_once '../db.php';
 
-// Load all students for the dropdown
 $students = $pdo->query("SELECT * FROM students")->fetchAll();
 
 $enrollments = [];
 $selected_student = null;
 
-if (isset($_GET['student_id']) && $_GET['student_id'] !== '') {
+// If student, always force their own ID — ignore GET param
+if (isStudent()) {
+    $student_id = $_SESSION['student_id'];
+} elseif (isset($_GET['student_id']) && $_GET['student_id'] !== '') {
     $student_id = $_GET['student_id'];
+} else {
+    $student_id = null;
+}
 
-    // Get selected student info
+if ($student_id) {
     $stmt = $pdo->prepare("SELECT * FROM students WHERE student_id = ?");
     $stmt->execute([$student_id]);
     $selected_student = $stmt->fetch();
 
-    // Get their enrollments with course info joined
     $stmt = $pdo->prepare("
         SELECT e.enrollment_id, c.course_name, c.credits, e.enrolled_at
         FROM enrollments e
@@ -38,6 +43,7 @@ if (isset($_GET['student_id']) && $_GET['student_id'] !== '') {
     <p><a href="../index.php">Back to Home</a></p>
     <a href="enroll.php">Enroll a Student</a>
 
+    <?php if (!isStudent()): ?>
     <form method="GET">
         <label>Select Student:
             <select name="student_id" onchange="this.form.submit()">
@@ -51,6 +57,7 @@ if (isset($_GET['student_id']) && $_GET['student_id'] !== '') {
             </select>
         </label>
     </form>
+    <?php endif; ?>
 
     <?php if ($selected_student): ?>
         <h2>Courses for <?= htmlspecialchars($selected_student['name']) ?></h2>

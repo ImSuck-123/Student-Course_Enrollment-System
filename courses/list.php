@@ -1,3 +1,5 @@
+<?php require_once '../auth.php'; 
+requireAdmin();?>
 <?php
 require_once '../db.php';
 
