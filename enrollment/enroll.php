@@ -1,5 +1,9 @@
+<?php require_once '../auth.php';
+if (isStudent()) {
+    $_POST['student_id'] = $_SESSION['student_id'];
+}?>
+
 <?php
-require_once '../auth.php';
 require_once '../db.php';
 
 $error   = '';
@@ -9,7 +13,7 @@ $students = $pdo->query("SELECT * FROM students")->fetchAll();
 $courses  = $pdo->query("SELECT * FROM courses")->fetchAll();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $student_id = isStudent() ? $_SESSION['student_id'] : $_POST['student_id'];
+    $student_id = isStudent() ? $_SESSION['student_id'] : $_POST['student_id']; // enforce again here too
     $course_id  = $_POST['course_id'];
 
     $stmt = $pdo->prepare("SELECT * FROM enrollments WHERE student_id = ? AND course_id = ?");
@@ -83,54 +87,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php if ($success): ?>
         <div class="alert alert-success"><?= $success ?></div>
     <?php endif; ?>
+<form method="POST">
+    <?php if (isStudent()): ?>
+    <!-- Hidden field, student can't tamper with the dropdown -->
+    <input type="hidden" name="student_id" value="<?= $_SESSION['student_id'] ?>">
+    <p><strong>Student:</strong> <?= htmlspecialchars($_SESSION['name']) ?></p>
+<?php else: ?>
+    <label>Student:
+        <select name="student_id" required>
+            <option value="">-- Select Student --</option>
+            <?php foreach ($students as $student): ?>
+            <option value="<?= $student['student_id'] ?>">
+                <?= htmlspecialchars($student['name']) ?>
+            </option>
+            <?php endforeach; ?>
+        </select>
+    </label><br><br>
+<?php endif; ?>
 
-    <div class="form-card">
-        <form method="POST">
+        <label>Course:
+            <select name="course_id" required>
+                <option value="">-- Select Course --</option>
+                <?php foreach ($courses as $course): ?>
+                <option value="<?= $course['course_id'] ?>">
+                    <?= htmlspecialchars($course['course_name']) ?> (<?= $course['credits'] ?> credits)
+                </option>
+                <?php endforeach; ?>
+            </select>
+        </label><br><br>
 
-            <div class="form-group">
-                <label>Student <span style="color:var(--danger)">*</span></label>
-                <?php if (isStudent()): ?>
-                    <input type="hidden" name="student_id" value="<?= $_SESSION['student_id'] ?>">
-                    <div class="student-display"><?= htmlspecialchars($_SESSION['name']) ?></div>
-                <?php else: ?>
-                    <select name="student_id" required>
-                        <option value="">— Select a student —</option>
-                        <?php foreach ($students as $student): ?>
-                        <option value="<?= $student['student_id'] ?>"
-                            <?= (isset($_POST['student_id']) && $_POST['student_id'] == $student['student_id']) ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($student['name']) ?>
-                        </option>
-                        <?php endforeach; ?>
-                    </select>
-                <?php endif; ?>
-            </div>
-
-            <div class="form-group">
-                <label>Course <span style="color:var(--danger)">*</span></label>
-                <select name="course_id" required>
-                    <option value="">— Select a course —</option>
-                    <?php foreach ($courses as $course): ?>
-                    <option value="<?= $course['course_id'] ?>"
-                        <?= (isset($_POST['course_id']) && $_POST['course_id'] == $course['course_id']) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($course['course_name']) ?> (<?= $course['credits'] ?> credits)
-                    </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Enroll</button>
-                <a href="list.php" class="btn btn-secondary">Cancel</a>
-            </div>
-
-        </form>
-    </div>
-
-</div>
-
-<footer>
-    Student Course Enrollment System &mdash; <a href="../members.php">Meet the Team</a>
-</footer>
-
+        <button type="submit">Enroll</button>
+    </form>
 </body>
 </html>

@@ -1,5 +1,5 @@
+<?php require_once '../auth.php'; ?>
 <?php
-require_once '../auth.php';
 require_once '../db.php';
 
 $students = $pdo->query("SELECT * FROM students")->fetchAll();
@@ -7,9 +7,16 @@ $students = $pdo->query("SELECT * FROM students")->fetchAll();
 $enrollments      = [];
 $selected_student = null;
 
-if (isset($_GET['student_id']) && $_GET['student_id'] !== '') {
+// If student, always force their own ID — ignore GET param
+if (isStudent()) {
+    $student_id = $_SESSION['student_id'];
+} elseif (isset($_GET['student_id']) && $_GET['student_id'] !== '') {
     $student_id = $_GET['student_id'];
+} else {
+    $student_id = null;
+}
 
+if ($student_id) {
     $stmt = $pdo->prepare("SELECT * FROM students WHERE student_id = ?");
     $stmt->execute([$student_id]);
     $selected_student = $stmt->fetch();
@@ -132,6 +139,7 @@ if (isset($_GET['student_id']) && $_GET['student_id'] !== '') {
         <a href="enroll.php" class="btn btn-primary">+ Enroll Student</a>
     </div>
 
+    <?php if (!isStudent()): ?>
     <form method="GET">
         <div class="filter-bar">
             <label for="student_id">Filter by Student</label>
@@ -146,6 +154,7 @@ if (isset($_GET['student_id']) && $_GET['student_id'] !== '') {
             </select>
         </div>
     </form>
+    <?php endif; ?>
 
     <?php if ($selected_student): ?>
 
