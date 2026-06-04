@@ -1,4 +1,5 @@
 <?php
+require_once '../auth.php';
 require_once '../db.php';
 
 $students = $pdo->query("SELECT * FROM students")->fetchAll();
@@ -111,10 +112,13 @@ if (isset($_GET['student_id']) && $_GET['student_id'] !== '') {
 <nav>
     <a href="../index.php" class="brand">Student Enrollment System</a>
     <ul>
+        <?php if (isAdmin()): ?>
         <li><a href="../students/list.php">Students</a></li>
         <li><a href="../courses/list.php">Courses</a></li>
+        <?php endif; ?>
         <li><a href="list.php">Enrollments</a></li>
         <li><a href="../members.php">Team</a></li>
+        <li><a href="../logout.php">Logout</a></li>
     </ul>
 </nav>
 

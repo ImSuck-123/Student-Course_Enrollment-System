@@ -1,4 +1,5 @@
 <?php
+require_once '../auth.php';
 require_once '../db.php';
 
 $error   = '';
@@ -8,7 +9,7 @@ $students = $pdo->query("SELECT * FROM students")->fetchAll();
 $courses  = $pdo->query("SELECT * FROM courses")->fetchAll();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $student_id = $_POST['student_id'];
+    $student_id = isStudent() ? $_SESSION['student_id'] : $_POST['student_id'];
     $course_id  = $_POST['course_id'];
 
     $stmt = $pdo->prepare("SELECT * FROM enrollments WHERE student_id = ? AND course_id = ?");
@@ -41,6 +42,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             padding-top: 1.5rem;
             border-top: 1px solid var(--border);
         }
+
+        .student-display {
+            padding: 0.65rem 0.9rem;
+            background: var(--accent-light);
+            border: 1px solid #a8d5b5;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -48,10 +59,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <nav>
     <a href="../index.php" class="brand">Student Enrollment System</a>
     <ul>
+        <?php if (isAdmin()): ?>
         <li><a href="../students/list.php">Students</a></li>
         <li><a href="../courses/list.php">Courses</a></li>
+        <?php endif; ?>
         <li><a href="list.php">Enrollments</a></li>
         <li><a href="../members.php">Team</a></li>
+        <li><a href="../logout.php">Logout</a></li>
     </ul>
 </nav>
 
@@ -75,15 +89,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="form-group">
                 <label>Student <span style="color:var(--danger)">*</span></label>
-                <select name="student_id" required>
-                    <option value="">— Select a student —</option>
-                    <?php foreach ($students as $student): ?>
-                    <option value="<?= $student['student_id'] ?>"
-                        <?= (isset($_POST['student_id']) && $_POST['student_id'] == $student['student_id']) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($student['name']) ?>
-                    </option>
-                    <?php endforeach; ?>
-                </select>
+                <?php if (isStudent()): ?>
+                    <input type="hidden" name="student_id" value="<?= $_SESSION['student_id'] ?>">
+                    <div class="student-display"><?= htmlspecialchars($_SESSION['name']) ?></div>
+                <?php else: ?>
+                    <select name="student_id" required>
+                        <option value="">— Select a student —</option>
+                        <?php foreach ($students as $student): ?>
+                        <option value="<?= $student['student_id'] ?>"
+                            <?= (isset($_POST['student_id']) && $_POST['student_id'] == $student['student_id']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($student['name']) ?>
+                        </option>
+                        <?php endforeach; ?>
+                    </select>
+                <?php endif; ?>
             </div>
 
             <div class="form-group">

@@ -1,4 +1,5 @@
 <?php
+require_once 'auth.php';
 require_once 'db.php';
 $members = $pdo->query("SELECT * FROM members")->fetchAll();
 ?>
@@ -65,10 +66,13 @@ $members = $pdo->query("SELECT * FROM members")->fetchAll();
 <nav>
     <a href="index.php" class="brand">Student Enrollment System</a>
     <ul>
+        <?php if (isAdmin()): ?>
         <li><a href="students/list.php">Students</a></li>
         <li><a href="courses/list.php">Courses</a></li>
+        <?php endif; ?>
         <li><a href="enrollment/list.php">Enrollments</a></li>
         <li><a href="members.php">Team</a></li>
+        <li><a href="logout.php">Logout</a></li>
     </ul>
 </nav>
 

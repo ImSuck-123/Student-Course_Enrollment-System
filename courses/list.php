@@ -1,4 +1,6 @@
 <?php
+require_once '../auth.php';
+requireAdmin();
 require_once '../db.php';
 
 $search = trim($_GET['search'] ?? '');
@@ -82,10 +84,13 @@ $courses = $stmt->fetchAll();
 <nav>
     <a href="../index.php" class="brand">Student Enrollment System</a>
     <ul>
+        <?php if (isAdmin()): ?>
         <li><a href="../students/list.php">Students</a></li>
         <li><a href="list.php">Courses</a></li>
+        <?php endif; ?>
         <li><a href="../enrollment/list.php">Enrollments</a></li>
         <li><a href="../members.php">Team</a></li>
+        <li><a href="../logout.php">Logout</a></li>
     </ul>
 </nav>
 

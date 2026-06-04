@@ -59,3 +59,10 @@ INSERT INTO members (name, student_id, email, role, bio) VALUES
     ('Jun',           '413856039', 'chinjunsi90@gmail.com',    'Project Lead',                        'Hello, I am Jun and I love math.'),
     ('Jordan',        '413856070', 'xxjordanxx88@gmail.com',   'Project Initiator & Backend Developer','Hello I am Jordan! I love to study!'),
     ('Terence Tseng', '413856013', 'terencet.301@gmail.com',   'Frontend Developer',                  'Hi I am Terence studying at TKU');
+
+-- Add password column for student login
+ALTER TABLE students ADD COLUMN IF NOT EXISTS password VARCHAR(255) NOT NULL DEFAULT '';
+
+-- Set default password 'password' for all existing students
+UPDATE students SET password = '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'
+WHERE password = '';
