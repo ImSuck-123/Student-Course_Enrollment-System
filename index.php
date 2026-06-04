@@ -1,7 +1,7 @@
 <?php
+require_once 'auth.php';
 require_once 'db.php';
 
-// Get counts for the dashboard
 $student_count    = $pdo->query("SELECT COUNT(*) FROM students")->fetchColumn();
 $course_count     = $pdo->query("SELECT COUNT(*) FROM courses")->fetchColumn();
 $enrollment_count = $pdo->query("SELECT COUNT(*) FROM enrollments")->fetchColumn();
@@ -14,7 +14,8 @@ $enrollment_count = $pdo->query("SELECT COUNT(*) FROM enrollments")->fetchColumn
 </head>
 <body>
     <h1>Student Course Enrollment System</h1>
-    <p>Welcome! Use the links below to manage students, courses, and enrollments.</p>
+    <p>Welcome, <strong><?= htmlspecialchars($_SESSION['name'] ?? 'Admin') ?></strong>!
+    <a href="logout.php">Logout</a></p>
 
     <hr>
 
@@ -27,23 +28,32 @@ $enrollment_count = $pdo->query("SELECT COUNT(*) FROM enrollments")->fetchColumn
 
     <hr>
 
-    <h2>Students</h2>
-    <ul>
-        <li><a href="students/list.php">View All Students</a></li>
-        <li><a href="students/add.php">Add New Student</a></li>
-    </ul>
+    <?php if (isAdmin()): ?>
+        <h2>Students</h2>
+        <ul>
+            <li><a href="students/list.php">View All Students</a></li>
+            <li><a href="students/add.php">Add New Student</a></li>
+        </ul>
 
-    <h2>Courses</h2>
-    <ul>
-        <li><a href="courses/list.php">View All Courses</a></li>
-        <li><a href="courses/add.php">Add New Course</a></li>
-    </ul>
+        <h2>Courses</h2>
+        <ul>
+            <li><a href="courses/list.php">View All Courses</a></li>
+            <li><a href="courses/add.php">Add New Course</a></li>
+        </ul>
 
-    <h2>Enrollments</h2>
-    <ul>
-        <li><a href="enrollment/list.php">View Enrollments</a></li>
-        <li><a href="enrollment/enroll.php">Enroll a Student</a></li>
-    </ul>
+        <h2>Enrollments</h2>
+        <ul>
+            <li><a href="enrollment/list.php">View All Enrollments</a></li>
+            <li><a href="enrollment/enroll.php">Enroll a Student</a></li>
+        </ul>
+
+    <?php else: ?>
+        <h2>My Courses</h2>
+        <ul>
+            <li><a href="enrollment/list.php?student_id=<?= $_SESSION['student_id'] ?>">View My Courses</a></li>
+            <li><a href="enrollment/enroll.php">Enroll in a Course</a></li>
+        </ul>
+    <?php endif; ?>
 
     <hr>
     <a href="members.php">About Our Team</a>
