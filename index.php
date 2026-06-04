@@ -12,13 +12,10 @@ $enrollment_count = $pdo->query("SELECT COUNT(*) FROM enrollments")->fetchColumn
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Enrollment System</title>
+    <title>Dashboard – Student Enrollment System</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Student Course Enrollment System</h1>
-    <p>Welcome, <strong><?= htmlspecialchars($_SESSION['name'] ?? 'Admin') ?></strong>!
-    <a href="logout.php">Logout</a></p>
 
 <nav>
     <a href="index.php" class="brand">Student Enrollment System</a>
@@ -35,32 +32,71 @@ $enrollment_count = $pdo->query("SELECT COUNT(*) FROM enrollments")->fetchColumn
 
 <div class="container">
 
+    <div class="page-header">
+        <h1>Welcome back, <?= htmlspecialchars($_SESSION['name'] ?? 'Admin') ?>!</h1>
+        <p><?= isAdmin() ? 'You are logged in as an administrator.' : 'Manage your course enrollments below.' ?></p>
+    </div>
+
     <?php if (isAdmin()): ?>
-        <h2>Students</h2>
-        <ul>
-            <li><a href="students/list.php">View All Students</a></li>
-            <li><a href="students/add.php">Add New Student</a></li>
-        </ul>
 
-        <h2>Courses</h2>
-        <ul>
-            <li><a href="courses/list.php">View All Courses</a></li>
-            <li><a href="courses/add.php">Add New Course</a></li>
-        </ul>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span class="stat-number"><?= $student_count ?></span>
+            <span class="stat-label">Students</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number"><?= $course_count ?></span>
+            <span class="stat-label">Courses</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number"><?= $enrollment_count ?></span>
+            <span class="stat-label">Enrollments</span>
+        </div>
+    </div>
 
-        <h2>Enrollments</h2>
-        <ul>
-            <li><a href="enrollment/list.php">View All Enrollments</a></li>
-            <li><a href="enrollment/enroll.php">Enroll a Student</a></li>
-        </ul>
+    <div class="section-grid">
+        <div class="card">
+            <h2>Students</h2>
+            <ul>
+                <li><a href="students/list.php">View All Students</a></li>
+                <li><a href="students/add.php">Add New Student</a></li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>Courses</h2>
+            <ul>
+                <li><a href="courses/list.php">View All Courses</a></li>
+                <li><a href="courses/add.php">Add New Course</a></li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>Enrollments</h2>
+            <ul>
+                <li><a href="enrollment/list.php">View All Enrollments</a></li>
+                <li><a href="enrollment/enroll.php">Enroll a Student</a></li>
+            </ul>
+        </div>
+    </div>
 
     <?php else: ?>
+
+    <div class="card" style="max-width: 400px;">
         <h2>My Courses</h2>
         <ul>
-            <li><a href="enrollment/list.php?student_id=<?= $_SESSION['student_id'] ?>">View My Courses</a></li>
+            <li><a href="enrollment/list.php?student_id=<?= $_SESSION['student_id'] ?>">View My Enrollments</a></li>
             <li><a href="enrollment/enroll.php">Enroll in a Course</a></li>
         </ul>
+    </div>
+
     <?php endif; ?>
+
+</div>
+
+<footer>
+    Student Course Enrollment System &mdash; <a href="members.php">Meet the Team</a>
+</footer>
 
 </body>
 </html>
