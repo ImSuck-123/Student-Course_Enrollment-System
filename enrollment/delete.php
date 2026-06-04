@@ -1,8 +1,5 @@
 <?php require_once '../auth.php'; ?>
 <?php
-require_once '../auth.php';
-requireAdmin();
-require_once '../db.php';
 
 $id = $_GET['id'] ?? null;
 
