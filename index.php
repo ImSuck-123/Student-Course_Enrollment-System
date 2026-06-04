@@ -8,25 +8,32 @@ $enrollment_count = $pdo->query("SELECT COUNT(*) FROM enrollments")->fetchColumn
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Enrollment System</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <h1>Student Course Enrollment System</h1>
     <p>Welcome, <strong><?= htmlspecialchars($_SESSION['name'] ?? 'Admin') ?></strong>!
     <a href="logout.php">Logout</a></p>
 
-    <hr>
-
-    <h2>Dashboard</h2>
+<nav>
+    <a href="index.php" class="brand">Student Enrollment System</a>
     <ul>
-        <li>Total Students: <strong><?= $student_count ?></strong></li>
-        <li>Total Courses: <strong><?= $course_count ?></strong></li>
-        <li>Total Enrollments: <strong><?= $enrollment_count ?></strong></li>
+        <?php if (isAdmin()): ?>
+        <li><a href="students/list.php">Students</a></li>
+        <li><a href="courses/list.php">Courses</a></li>
+        <?php endif; ?>
+        <li><a href="enrollment/list.php">Enrollments</a></li>
+        <li><a href="members.php">Team</a></li>
+        <li><a href="logout.php">Logout</a></li>
     </ul>
+</nav>
 
-    <hr>
+<div class="container">
 
     <?php if (isAdmin()): ?>
         <h2>Students</h2>
@@ -55,7 +62,5 @@ $enrollment_count = $pdo->query("SELECT COUNT(*) FROM enrollments")->fetchColumn
         </ul>
     <?php endif; ?>
 
-    <hr>
-    <a href="members.php">About Our Team</a>
 </body>
 </html>
