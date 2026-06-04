@@ -2,8 +2,8 @@
 // Database connection settings
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'enrollment_db');
-define('DB_USER', 'student_user');
-define('DB_PASS', 'password123');
+define('DB_USER', 'root');
+define('DB_PASS', '');
 
 // Create connection using PDO
 try {

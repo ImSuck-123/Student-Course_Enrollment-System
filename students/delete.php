@@ -7,7 +7,6 @@ if (!$id) {
     die("No student ID provided.");
 }
 
-// Load student so we can show their name in the confirmation
 $stmt = $pdo->prepare("SELECT * FROM students WHERE student_id = ?");
 $stmt->execute([$id]);
 $student = $stmt->fetch();
@@ -16,7 +15,6 @@ if (!$student) {
     die("Student not found.");
 }
 
-// Handle confirmation
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare("DELETE FROM students WHERE student_id = ?");
     $stmt->execute([$id]);
@@ -26,20 +24,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delete Student</title>
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <h1>Delete Student</h1>
-    <a href="list.php">Back to list</a>
 
-    <p>Are you sure you want to delete <strong><?= htmlspecialchars($student['name']) ?></strong>?</p>
-    <p style="color:red">This will also delete all their enrollments.</p>
+<nav>
+    <a href="../index.php" class="brand">Student Enrollment System</a>
+    <ul>
+        <li><a href="list.php">Students</a></li>
+        <li><a href="../courses/list.php">Courses</a></li>
+        <li><a href="../enrollment/list.php">Enrollments</a></li>
+        <li><a href="../members.php">Team</a></li>
+    </ul>
+</nav>
 
-    <form method="POST">
-        <button type="submit" style="color:red">Yes, Delete</button>
-        <a href="list.php">Cancel</a>
-    </form>
+<div class="container">
+
+    <div class="page-header">
+        <h1>Delete Student</h1>
+        <p>This action cannot be undone.</p>
+    </div>
+
+    <div class="form-card">
+        <p style="font-size: 0.95rem; margin-bottom: 1rem;">
+            Are you sure you want to delete <strong><?= htmlspecialchars($student['name']) ?></strong>?
+        </p>
+        <div class="alert alert-error">This will also remove all their course enrollments.</div>
+        <form method="POST">
+            <div class="form-actions">
+                <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                <a href="list.php" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<footer>
+    Student Course Enrollment System &mdash; <a href="../members.php">Meet the Team</a>
+</footer>
+
 </body>
 </html>
